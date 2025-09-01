@@ -1,0 +1,5 @@
+fastapi>=0.110,<0.114   # API framework
+uvicorn[standard]>=0.27,<0.29  # ASGI server
+pvlib>=0.10             # solar modeling
+pandas>=1.5
+numpy>=1.24

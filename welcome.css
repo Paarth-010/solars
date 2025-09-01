@@ -1,0 +1,182 @@
+:root{
+  --bg:#0b1020; --bg2:#11162a; --card:#0f1528cc; --border:#1f2a44;
+  --text:#e6ecff; --muted:#9fb0d3; --accent:#6aa3ff; --accent2:#22d3ee;
+  --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+  --mx:0; --my:0; --cx:50%; --cy:50%;
+}
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#f6f8fc; --bg2:#eef2f7; --card:#ffffffcc; --border:#e5e7eb;
+    --text:#0f172a; --muted:#4b5563; --accent:#2563eb; --accent2:#06b6d4;
+    --shadow:0 10px 30px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.6);
+  }
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0; color:var(--text);
+  background:
+    radial-gradient(1200px 600px at 20% -10%, var(--bg2) 0%, var(--bg) 60%),
+    linear-gradient(180deg, var(--bg) 0%, #0a0f21 100%);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+/* Ambient background pan */
+.bg-pan{ background-size:200% 200%; animation:bg-pan 18s linear infinite alternate; }
+
+/* WebGL layer */
+.particles-container{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+/* Hero */
+.hero{
+  position:relative; z-index:1; min-height:100svh;
+  display:grid; place-items:center; text-align:center; padding:24px;
+  transform:perspective(800px) rotateX(calc(var(--my)*2deg)) rotateY(calc(var(--mx)*-2deg));
+  transition:transform 120ms ease-out; will-change:transform; backface-visibility:hidden; transform-style:preserve-3d;
+}
+
+/* Single moving wrapper for hero content */
+.parallax{
+  position: relative; display: grid; gap: 12px; justify-items: center;
+  transform: translate3d(var(--dx, 0px), var(--dy, 0px), 0);
+  transition: transform 120ms ease-out;
+  will-change: transform; backface-visibility: hidden;
+}
+
+/* Remove floating brand chip and center logo in bar */
+.brand-chip{ display:none !important; } /* hide brand chip fully [MDN display] */ /* [5] */
+.logo-container{ display:none !important; } /* remove center logo slot */ /* [5] */
+
+/* Headline and body */
+.title{ margin:0 0 10px; font-size: clamp(28px, 6vw, 56px); line-height:1.08; letter-spacing:.3px; will-change: transform; backface-visibility: hidden; }
+.subtitle{ margin:8px auto 22px; max-width:680px; color:var(--muted); font-size:clamp(14px, 1.9vw, 18px); will-change: transform; backface-visibility: hidden; }
+
+/* CTA */
+.cta{
+  display:inline-flex; align-items:center; gap:10px; padding:14px 18px; border-radius:14px; text-decoration:none; color:#fff;
+  border:1px solid rgba(255,255,255,.22); background: linear-gradient(90deg, var(--accent), var(--accent2));
+  box-shadow: var(--shadow); font-weight:600;
+  transition: transform 120ms ease-out, filter 160ms ease-out, box-shadow 160ms ease-out; will-change: transform; backface-visibility: hidden;
+}
+.cta:hover{ transform: translateY(-2px) scale(1.01); filter: brightness(1.04) saturate(1.08); }
+.cta:active{ transform: translateY(0) scale(.99); }
+
+/* Shiny heading */
+.shiny-text{
+  --shine-base:#eaf0ff; --shine-peak:#ffffff;
+  color:transparent; -webkit-text-fill-color:transparent; -webkit-background-clip:text; background-clip:text;
+  background-image:
+    linear-gradient(0deg, var(--shine-base), var(--shine-base)),
+    linear-gradient(120deg, rgba(255,255,255,0) 45%, var(--shine-peak) 50%, rgba(255,255,255,0) 55%);
+  background-size:100% 100%, 240% 100%; background-position:0 0, 110% 0; background-repeat:no-repeat;
+  text-shadow:0 0 10px rgba(255,255,255,.4), 0 0 22px rgba(99,102,241,.26);
+  animation: shiny-sweep 2.4s linear infinite;
+}
+.shiny-text.disabled{ animation:none; }
+
+/* Page transition overlay */
+.page-transition{
+  position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0;
+  background: radial-gradient(1200px 600px at 20% -10%, rgba(34,211,238,0.15), rgba(13,17,35,0.9)),
+              linear-gradient(180deg, #0b1020 0%, #0a0f21 100%);
+  clip-path: circle(0% at var(--cx) var(--cy)); transition: clip-path 620ms cubic-bezier(.16,1,.3,1), opacity 620ms cubic-bezier(.16,1,.3,1);
+}
+.page-transition.active{ pointer-events:auto; opacity:1; clip-path: circle(150% at var(--cx) var(--cy)); }
+
+/* ===== Card Nav (top overlay) ===== */
+.card-nav-container{
+  position:absolute; top:2em; left:50%; transform:translateX(-50%);
+  width:90%; max-width:800px; z-index:99; box-sizing:border-box;
+}
+.card-nav{
+  display:block; height:60px; padding:0; background:#fff;
+  border:0.5px solid rgba(255,255,255,0.1);
+  border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);
+  position:relative; overflow:hidden; will-change:height;
+  contain: paint;               /* isolate hover paints to the bar */ /* [1][6] */
+  transform: translateZ(0);     /* promote to compositor layer */     /* [2] */
+  backface-visibility: hidden;  /* avoid 3D repaint artifacts */      /* [3] */
+}
+.card-nav-top{
+  position:absolute; top:0; left:0; right:0; height:60px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0.5rem 0.45rem 0.55rem 1.1rem; z-index:2; color:#0f172a;
+}
+
+/* Hamburger */
+.hamburger-menu{ height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; gap:6px; }
+.hamburger-line{ width:30px; height:2px; background-color:currentColor; transition:transform .25s ease, opacity .2s ease, margin .3s ease; transform-origin:50% 50%; }
+.hamburger-menu:hover .hamburger-line{ opacity:.75; }
+.hamburger-menu.open .hamburger-line:first-child{ transform: translateY(4px) rotate(45deg); }
+.hamburger-menu.open .hamburger-line:last-child{ transform: translateY(-4px) rotate(-45deg); }
+
+/* Bar content */
+.card-nav-content{
+  position:absolute; left:0; right:0; top:60px; bottom:0;
+  padding:0.5rem; display:flex; align-items:flex-end; gap:12px;
+  visibility:hidden; pointer-events:none; z-index:1;
+}
+.card-nav.open .card-nav-content,
+.card-nav-content.visible{ visibility:visible; pointer-events:auto; }
+
+.nav-card{
+  height:100%; flex:1 1 0; min-width:0; border-radius:9px;
+  position:relative; display:flex; flex-direction:column; padding:12px 16px; gap:8px; user-select:none;
+  opacity:0; transform:translateY(18px);
+}
+.nav-card-label{ font-weight:600; font-size:20px; letter-spacing:-0.3px; margin:0; }
+.nav-card-links{ margin-top:auto; display:flex; flex-direction:column; gap:2px; }
+.nav-card-link{ font-size:16px; color:inherit; text-decoration:none; display:inline-flex; align-items:center; gap:6px; opacity:.9; transition:opacity .25s ease; }
+.nav-card-link:hover{ opacity:.75; }
+
+/* Prevent transform tween fights during live parallax */
+.parallax-live .card-nav,
+.parallax-live .nav-card,
+.parallax-live .nav-card-link{ transition: transform 0s !important; } /* stabilize during rAF updates */ /* [4] */
+
+/* Responsive */
+@media (max-width: 768px){
+  .card-nav-container{ width:90%; top:1.2em; }
+  .card-nav-top{ padding:0.5rem 1rem; justify-content:space-between; }
+  .hamburger-menu{ order:2; }
+  .logo-container{ display:none !important; }
+  .card-nav-content{ flex-direction:column; align-items:stretch; gap:8px; padding:0.5rem; bottom:0; justify-content:flex-start; }
+  .nav-card{ height:auto; min-height:60px; flex:1 1 auto; max-height:none; }
+  .nav-card-label{ font-size:18px; }
+  .nav-card-link{ font-size:15px; }
+}
+
+/* Keyframes */
+@keyframes bg-pan{ from{ background-position:0% 50%; } to{ background-position:100% 50%; } }
+@keyframes pulse{ 0%,100%{ transform:scale(1); box-shadow:0 0 10px var(--accent); } 50%{ transform:scale(1.1); box-shadow:0 0 18px var(--accent); } }
+@keyframes shiny-sweep{ 0%{ background-position:0 0, 110% 0; } 100%{ background-position:0 0, -120% 0; } }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .hero, .parallax, .title, .subtitle, .cta{ transform:none !important; } /* motion comfort */ /* [7] */
+  .bg-pan{ animation-duration:36s; } .shiny-text{ animation-duration:5s; }
+  .page-transition{ transition:none; }
+}
+/* Lock the page to a single, full-viewport scene */
+html, body{
+  height: 100%;
+  overflow-x: clip;   /* no horizontal scrollbar, forbids programmatic scroll on x */ /* [21] */
+  overflow-y: hidden; /* no vertical scrollbar; hides overflow content vertically */  /* [22] */
+  overscroll-behavior: none; /* prevent scroll chaining/bounce on touch devices */     /* [24] */
+}
+
+/* Safety: ensure full-screen fixed layers never create overflow */
+.particles-container,
+.page-transition{
+  position: fixed;
+  inset: 0;
+  overflow: clip;     /* explicitly clip any internal overflow so no scrollbars appear */ /* [16][25] */
+}
+
+/* If any element accidentally exceeds viewport width, clip it */
+body > *{
+  max-width: 100vw;
+  overflow-x: clip;   /* block stray horizontal overflow from absolute/fixed children */ /* [21] */
+}
+

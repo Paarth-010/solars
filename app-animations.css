@@ -1,0 +1,189 @@
+/* ====================== app-animations-extended.css ====================== */
+/* Motion tokens */
+:root{
+  --ease-out: cubic-bezier(.16,1,.3,1);
+  --ease-in: cubic-bezier(.32,0,.67,0);
+  --ease-in-out: cubic-bezier(.65,.05,.36,1);
+  --dur-1: 160ms;
+  --dur-2: 260ms;
+  --dur-3: 420ms;
+  --dur-4: 900ms;
+}
+
+/* 0) Ambient page background pan (apply .bg-pan on body if desired) */
+.bg-pan{
+  background-size: 200% 200%;
+  animation: bg-pan var(--dur-4) linear infinite alternate;
+}
+
+/* 1) App intro */
+#map-wrap{ animation: fade-up var(--dur-3) var(--ease-out) 60ms both, soft-pop var(--dur-3) var(--ease-out) 60ms both; }
+.card{ animation: fade-up var(--dur-3) var(--ease-out) 120ms both; }
+
+/* 2) Header chip + glow */
+.brand{ animation: floaty 6s ease-in-out 600ms infinite; }
+.brand .dot{ animation: pulse-glow 1600ms ease-in-out 400ms infinite; }
+
+/* 3) Buttons: lift + shine + ripple */
+.btn{
+  position: relative;
+  transition: transform var(--dur-1) var(--ease-out), filter var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out);
+  overflow: hidden;
+  will-change: transform, filter;
+}
+.btn:hover{ transform: translateY(-2px) scale(1.01); filter: brightness(1.03) saturate(1.08); }
+.btn:active{ transform: translateY(0) scale(.99); transition-duration: 80ms; }
+.btn::before{
+  content:""; position:absolute; inset:0; border-radius: inherit;
+  background: linear-gradient(120deg, rgba(255,255,255,.0) 0%, rgba(255,255,255,.35) 40%, rgba(255,255,255,.0) 60%);
+  transform: translateX(-120%); filter: blur(6px); pointer-events:none;
+}
+.btn:hover::before{ animation: shine-sweep 900ms var(--ease-out); }
+/* Ripple on click */
+.btn::after{
+  content:""; position:absolute; width:10px; height:10px; left:50%; top:50%; border-radius:50%;
+  background: rgba(255,255,255,.45); transform: translate(-50%,-50%) scale(0); opacity:0; pointer-events:none;
+}
+.btn:active::after{ animation: ripple .6s var(--ease-out); }
+
+/* 4) Inputs: animated focus glow */
+input{
+  transition: border-color var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out);
+}
+input:focus{
+  border-color: color-mix(in srgb, #60a5fa 70%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, #60a5fa 28%, transparent), 0 6px 20px rgba(0,0,0,.15);
+}
+
+/* 5) KPI chip tick (toggle .is-updated) */
+.chip{ transition: transform var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out); }
+.chip.is-updated{ transform: translateY(-2px); background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04)); }
+
+/* 6) Compass arrow cues */
+#arrow{ transition: transform var(--dur-2) var(--ease-in-out); }
+#arrow.spin{ animation: spin-oneshot 600ms var(--ease-out) both; }
+
+/* 7) Toast pop + progress underline */
+.toast.show{ animation: pop-in var(--dur-2) var(--ease-out) both; position: relative; }
+.toast.show::before{
+  content:""; position:absolute; left:10px; right:10px; bottom:6px; height:2px; border-radius:3px;
+  background: linear-gradient(90deg, #22d3ee, #3b82f6);
+  animation: progress-shrink 2400ms linear forwards;
+}
+.toast.show::after{
+  content:""; position:absolute; right:-6px; top:-6px; width:10px; height:10px; border-radius:50%;
+  background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.0) 70%);
+  filter: blur(.6px); animation: twinkle 1200ms ease-in-out infinite;
+}
+
+/* 8) Leaflet UI: zoom control micro-bounce */
+.leaflet-control-zoom a{
+  transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
+}
+.leaflet-control-zoom a:hover{ transform: translateY(-1px); box-shadow: 0 6px 14px rgba(0,0,0,.18); }
+.leaflet-control-zoom a:active{ animation: micro-bounce 360ms var(--ease-out); }
+
+/* 9) Marker effects */
+.leaflet-marker-icon{ position: relative; }
+.leaflet-marker-icon.bounce{ animation: marker-bounce 760ms var(--ease-out) both; }
+.leaflet-marker-icon.pulse{ animation: marker-pulse 1400ms ease-out 200ms infinite; }
+/* Ring pulse using pseudo-element */
+.leaflet-marker-icon.ring::after{
+  content:""; position:absolute; left:50%; top:50%; width:8px; height:8px; border-radius:50%; transform: translate(-50%,-50%);
+  box-shadow: 0 0 0 0 rgba(59,130,246,.6); animation: ring-pulse 1600ms ease-out infinite;
+}
+
+/* 10) Click ping (inject a .ping element at click coords) */
+.ping{
+  position:absolute; width:14px; height:14px; border-radius:50%;
+  background: radial-gradient(circle at 30% 30%, #60a5fa, rgba(96,165,250,.0) 70%);
+  transform: translate(-50%,-50%) scale(.6); opacity:.9; pointer-events:none;
+  animation: ping-out 900ms var(--ease-out) forwards;
+}
+
+/* 11) SVG route dash (apply class=route-anim to polyline/path) */
+.leaflet-overlay-pane svg path.route-anim{
+  stroke-dasharray: 8 10; animation: dash 1400ms linear infinite;
+}
+
+/* 12) Success confetti aura (toggle .confetti on a container) */
+.confetti{ position: relative; isolation:isolate; }
+.confetti::after{
+  content:""; position:absolute; inset:-4px; z-index:-1; border-radius:12px;
+  background: conic-gradient(from 0deg, #22d3ee, #60a5fa, #a78bfa, #f472b6, #22d3ee);
+  filter: blur(10px) saturate(140%); opacity:.35; animation: hue-spin 6s linear infinite;
+}
+
+/* 13) Skeleton shimmer helper */
+.skeleton{
+  position: relative; overflow: hidden; color: transparent !important;
+  background: linear-gradient(90deg, rgba(255,255,255,.06) 25%, rgba(255,255,255,.16) 37%, rgba(255,255,255,.06) 63%);
+  background-size: 400% 100%; animation: shimmer 1200ms linear infinite;
+}
+
+/* 14) Focus pulse on map keyboard focus */
+#map:focus-visible{
+  outline:3px solid color-mix(in srgb, #3b82f6 70%, transparent);
+  outline-offset:2px; animation: focus-pulse 1000ms ease-in-out 2;
+}
+
+/* 15) Shiny text effect (with brighter highlight and base fill) */
+.shiny-text{
+  /* Base fill + bright sweep via layered backgrounds clipped to text */
+  --shine-base: #dfe5ff;                 /* base fill color */
+  --shine-peak: #ffffff;                 /* bright highlight */
+  color: transparent;                    /* ensure gradient shows in glyphs */
+  -webkit-text-fill-color: transparent;  /* WebKit/Blink requirement */
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  /* Two layers: base color + animated white sweep on top */
+  background-image:
+    linear-gradient(0deg, var(--shine-base), var(--shine-base)),
+    linear-gradient(120deg, rgba(255,255,255,0) 45%, var(--shine-peak) 50%, rgba(255,255,255,0) 55%);
+  background-size: 100% 100%, 240% 100%;
+  background-position: 0 0, 110% 0;
+  background-repeat: no-repeat;
+
+  display: inline-block;
+  will-change: background-position;
+  animation: shiny-sweep 2.6s linear infinite; /* faster, brighter sweep */
+  text-shadow:
+    0 0 8px rgba(255,255,255,.38),
+    0 0 18px rgba(99,102,241,.28);             /* soft outer glow for legibility */
+}
+.shiny-text.disabled{ animation: none; }
+
+/* ---------- Keyframes ---------- */
+@keyframes bg-pan{ from{ background-position: 0% 50%; } to{ background-position: 100% 50%; } }
+@keyframes fade-up{ from{opacity:0; transform: translateY(10px) scale(.98);} to{opacity:1; transform:none;} }
+@keyframes soft-pop{ 0%{transform:scale(.98);} 60%{transform:scale(1.01);} 100%{transform:scale(1);} }
+@keyframes floaty{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-4px);} }
+@keyframes pulse-glow{ 0%,100%{ box-shadow:0 0 0 0 rgba(106,163,255,.0), 0 0 12px rgba(106,163,255,.6);} 50%{ box-shadow:0 0 0 12px rgba(106,163,255,.08), 0 0 18px rgba(106,163,255,.9);} }
+@keyframes shine-sweep{ 0%{transform:translateX(-120%);opacity:.0;} 30%{opacity:.8;} 100%{transform:translateX(120%);opacity:0;} }
+@keyframes ripple{ from{ transform: translate(-50%,-50%) scale(.2); opacity:.5; } to{ transform: translate(-50%,-50%) scale(14); opacity:0; } }
+@keyframes spin-oneshot{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+@keyframes pop-in{ from{ transform: translateY(8px) scale(.98); opacity:0;} to{transform:none; opacity:1;} }
+@keyframes progress-shrink{ from{ transform: scaleX(1); transform-origin:left; } to{ transform: scaleX(0); transform-origin:left; } }
+@keyframes twinkle{ 0%,100%{transform:scale(.6);opacity:.4;} 50%{transform:scale(1.2);opacity:1;} }
+@keyframes micro-bounce{ 0%{transform:translateY(0);} 40%{transform:translateY(-2px);} 70%{transform:translateY(1px);} 100%{transform:translateY(0);} }
+@keyframes marker-bounce{ 0%{transform:translateY(-14px) scale(.96);} 60%{transform:translateY(2px) scale(1.02);} 80%{transform:translateY(-2px) scale(.998);} 100%{transform:translateY(0) scale(1);} }
+@keyframes marker-pulse{ 0%{filter:drop-shadow(0 0 0 rgba(99,102,241,.0)); transform:translateY(0);} 50%{filter:drop-shadow(0 0 12px rgba(99,102,241,.6)); transform:translateY(-1px);} 100%{filter:drop-shadow(0 0 0 rgba(99,102,241,.0)); transform:translateY(0);} }
+@keyframes ring-pulse{ 0%{ box-shadow: 0 0 0 0 rgba(59,130,246,.6);} 70%{ box-shadow: 0 0 0 14px rgba(59,130,246,0);} 100%{ box-shadow: 0 0 0 0 rgba(59,130,246,0);} }
+@keyframes ping-out{ 0%{ transform: translate(-50%,-50%) scale(.6); opacity:.9;} 100%{ transform: translate(-50%,-50%) scale(2.2); opacity:0;} }
+@keyframes dash{ to{ stroke-dashoffset: -180; } }
+@keyframes hue-spin{ from{ filter: hue-rotate(0deg);} to{ filter: hue-rotate(360deg);} }
+@keyframes shimmer{ 0%{background-position:100% 0;} 100%{background-position:0 0;} }
+@keyframes focus-pulse{ 0%{outline-color: color-mix(in srgb,#3b82f6 70%,transparent);} 50%{outline-color: color-mix(in srgb,#22d3ee 70%,transparent);} 100%{outline-color: color-mix(in srgb,#3b82f6 70%,transparent);} }
+/* Shiny text sweep for layered backgrounds (moves the top highlight band) */
+@keyframes shiny-sweep{
+  0%   { background-position: 0 0, 110% 0; }
+  100% { background-position: 0 0, -120% 0; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  /* Soften most animations but keep the shiny text gently active */
+  *{ animation-duration: 120ms !important; transition-duration: 120ms !important; }
+  .shiny-text{ animation-duration: 6s !important; } /* slow sweep rather than fully disabling */
+}

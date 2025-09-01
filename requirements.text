@@ -1,0 +1,6 @@
+# Add to requirements.txt
+fastapi
+uvicorn
+numpy
+pandas
+pvlib

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome • Solar Position Optimizer</title>
+  <link rel="stylesheet" href="welcome.css" />
+  <meta name="color-scheme" content="dark light" />
+</head>
+<body class="bg-pan">
+  <!-- Card Nav (navigation bar) -->
+  <div class="card-nav-container" role="navigation" aria-label="Primary">
+    <nav class="card-nav" id="cardNav">
+      <div class="card-nav-top">
+        <div class="hamburger-menu" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="cardNavContent">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </div>
+
+        <!-- Center slot intentionally empty and hidden in CSS -->
+        <div class="logo-container" aria-hidden="true"></div>
+      </div>
+
+      <div class="card-nav-content" id="cardNavContent">
+        <section class="nav-card" style="background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.8)); color:#0f172a;">
+          <h4 class="nav-card-label">Platform</h4>
+          <div class="nav-card-links">
+            <a class="nav-card-link" href="#features">Features</a>
+            <a class="nav-card-link" href="#insights">Insights</a>
+          </div>
+        </section>
+        <section class="nav-card" style="background: linear-gradient(180deg, rgba(17,24,39,.9), rgba(17,24,39,.8)); color:#e5e7eb;">
+          <h4 class="nav-card-label">Capabilities</h4>
+          <div class="nav-card-links">
+            <a class="nav-card-link" href="#tracking">Live tracking</a>
+            <a class="nav-card-link" href="#kpi">KPIs</a>
+          </div>
+        </section>
+        <section class="nav-card" style="background: linear-gradient(180deg, rgba(16,185,129,.85), rgba(5,150,105,.85)); color:#04210d;">
+          <h4 class="nav-card-label">Payments</h4>
+          <div class="nav-card-links">
+            <a class="nav-card-link" href="#wallet">Wallet</a>
+            <a class="nav-card-link" href="#invoices">Invoicing</a>
+          </div>
+        </section>
+        <section class="nav-card" style="background: linear-gradient(180deg, rgba(99,102,241,.9), rgba(79,70,229,.9)); color:#eef2ff;">
+          <h4 class="nav-card-label">Marketplace</h4>
+          <div class="nav-card-links">
+            <a class="nav-card-link" href="#network">Network</a>
+            <a class="nav-card-link" href="#pricing">Pricing</a>
+          </div>
+        </section>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Transition overlay -->
+  <div id="pageTransition" class="page-transition" aria-hidden="true"></div>
+
+  <!-- WebGL background -->
+  <div id="particles" class="particles-container" aria-hidden="true"></div>
+
+  <!-- Hero -->
+  <main class="hero" role="main">
+    <section class="parallax">
+      <h1 class="title shiny-text">Harvest more sun, effortlessly</h1>
+      <p class="subtitle">
+        Click “Get started” to choose a location and compute the optimal fixed tilt and azimuth for maximum annual energy.
+      </p>
+      <a class="cta" id="ctaStart" href="frontend.html" rel="noopener">Get started</a>
+    </section>
+
+    <p class="footnote">WebGL particles are decorative; motion slows if reduced‑motion is enabled.</p>
+  </main>
+
+  <!-- Modules -->
+  <script type="module" src="parallax.js"></script>
+  <script type="module" src="card-nav.js"></script>
+</body>
+</html>
