@@ -12,15 +12,10 @@ import os
 # Create the FastAPI instance
 app = FastAPI()
 
-
-@app.get("/", response_class=HTMLResponse) 
-def read_root():
-    return FileResponse('welcome.html')
-
 @app.get("/", response_class=HTMLResponse)
 def read_root():
     # Read and return your HTML file
-    with open("frontend.html", "r", encoding="utf-8") as f:
+    with open("welcome.html", "r", encoding="utf-8") as f:
         return f.read()
 
 
