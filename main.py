@@ -6,9 +6,16 @@ import math
 import numpy as np
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+import os
+
 
 # Create the FastAPI instance
 app = FastAPI()
+
+
+@app.get("/", response_class=HTMLResponse) 
+def read_root():
+    return FileResponse('welcome.html')
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
